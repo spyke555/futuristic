@@ -14,7 +14,7 @@ class Futuristic<T> extends StatefulWidget {
   /// Widget to display before the [Future] starts executing.
   /// Call [VoidCallback] to start executing the [Future].
   /// If not null, [autoStart] should be false.
-  final Widget Function(BuildContext, VoidCallback) initialBuilder;
+  final Widget Function(BuildContext, VoidCallback)? initialBuilder;
 
   /// Widget to display while the [Future] is executing.
   /// If null, a [CircularProgressIndicator] will be displayed.
@@ -39,17 +39,18 @@ class Futuristic<T> extends StatefulWidget {
   /// Call [VoidCallback] to start executing the [Future] again.
   final Function(Object, VoidCallback)? onError;
 
-  const Futuristic({
-    Key? key,
-    required this.futureBuilder,
-    this.autoStart = false,
-    required this.initialBuilder,
-    this.busyBuilder,
-    this.errorBuilder,
-    this.dataBuilder,
-    this.onData,
-    this.onError
-  }) : super(key: key);
+  const Futuristic(
+      {Key? key,
+      required this.futureBuilder,
+      this.autoStart = false,
+      this.initialBuilder,
+      this.busyBuilder,
+      this.errorBuilder,
+      this.dataBuilder,
+      this.onData,
+      this.onError})
+      : assert(autoStart ^ (initialBuilder != null)),
+        super(key: key);
 
   @override
   _FuturisticState<T> createState() => _FuturisticState<T>();
@@ -87,7 +88,10 @@ class _FuturisticState<T> extends State<Futuristic<T>> {
   }
 
   Widget _handleInitial(BuildContext context) {
-    return widget.initialBuilder(context, _execute);
+    if (widget.initialBuilder != null) {
+      return widget.initialBuilder!(context, _execute);
+    }
+    return _defaultWidget();
   }
 
   Widget _handleSnapshot(BuildContext context, AsyncSnapshot<T> snapshot) {
@@ -139,7 +143,8 @@ class _FuturisticState<T> extends State<Futuristic<T>> {
 
   bool _isActive() => mounted && (ModalRoute.of(context)?.isActive ?? true);
 
-  Widget _defaultBusyWidget() => const Center(child: CircularProgressIndicator());
+  Widget _defaultBusyWidget() =>
+      const Center(child: CircularProgressIndicator());
 
   Widget _defaultWidget() => const SizedBox.shrink();
 }

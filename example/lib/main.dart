@@ -40,13 +40,13 @@ class Home extends StatelessWidget {
           children: <Widget>[
             Container(height: 50, child: Center(child: GoodButton())),
             Container(height: 50, child: Center(child: BadButton())),
-            RaisedButton(
+            ElevatedButton(
               child: Text('Good screen example'),
               onPressed: () {
                 Navigator.of(context).pushNamed(GoodScreen.routeName);
               },
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text('Bad screen example'),
               onPressed: () {
                 Navigator.of(context).pushNamed(BadScreen.routeName);
@@ -64,7 +64,8 @@ class GoodButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Futuristic<int>(
       futureBuilder: () => goodFuture(1, 2),
-      initialBuilder: (_, start) => RaisedButton(child: Text('Good button example'), onPressed: start),
+      initialBuilder: (_, start) =>
+          ElevatedButton(child: Text('Good button example'), onPressed: start),
       busyBuilder: (_) => CircularProgressIndicator(),
       dataBuilder: (_, data) => Text(data.toString()),
     );
@@ -76,15 +77,18 @@ class BadButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Futuristic<int>(
       futureBuilder: () => badFuture(1, 2),
-      initialBuilder: (_, start) => RaisedButton(child: Text('Bad button example'), onPressed: start),
+      initialBuilder: (_, start) =>
+          ElevatedButton(child: Text('Bad button example'), onPressed: start),
       busyBuilder: (_) => CircularProgressIndicator(),
-      errorBuilder: (_, error, retry) => RaisedButton(child: Text('Sorry! Try again'), onPressed: retry),
+      errorBuilder: (_, error, retry) =>
+          ElevatedButton(child: Text('Sorry! Try again'), onPressed: retry),
     );
   }
 }
 
 class GoodScreen extends StatelessWidget {
   static const routeName = '/good';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,6 +107,7 @@ class GoodScreen extends StatelessWidget {
 
 class BadScreen extends StatelessWidget {
   static const routeName = '/bad';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,10 +120,10 @@ class BadScreen extends StatelessWidget {
           onError: (error, retry) {
             showDialog(
               context: context,
-              child: AlertDialog(
+              builder: (context) => AlertDialog(
                 content: Text('Sorry! Try again'),
                 actions: <Widget>[
-                  FlatButton(
+                  TextButton(
                     child: Text('RETRY'),
                     onPressed: () {
                       Navigator.of(context).pop();
